@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useWallet } from 'column-catalogue'
 
 export function TransferAction() {
-    const { address, balance, signAndSend, checkBalance } = useWallet()
+    const { balance, signAndSend, checkBalance } = useWallet()
     const [recipient, setRecipient] = useState('')
     const [amount, setAmount] = useState('')
     const [loading, setLoading] = useState(false)
