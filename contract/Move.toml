@@ -1,0 +1,15 @@
+[package]
+name = "passkey-bio"
+version = "1.0.0"
+authors = []
+
+[addresses]
+onchain_bio_addr = "0x6572d55bc0d8e3d026d54f0ed1c7cc75e2492515cfd803cb12adb84776f21036"
+[dev-addresses]
+
+[dependencies.AptosFramework]
+git = "https://github.com/movementlabsxyz/aptos-core.git"
+rev = "movement"
+subdir = "aptos-move/framework/aptos-framework"
+
+[dev-dependencies]

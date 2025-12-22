@@ -1,5 +1,6 @@
 import { WalletConnect } from './WalletConnect'
 import { TransferAction } from './TransferAction'
+import { BioAction } from './bio/BioAction'
 import { LedgerAction } from './LedgerAction'
 import { SecurityTools } from './SecurityTools'
 
@@ -12,6 +13,11 @@ export function Dashboard() {
                     WALLET IDENTITY
                 </div>
                 <WalletConnect />
+            </section>
+
+            {/* Bio Section */}
+            <section>
+                <BioAction />
             </section>
 
             {/* Transfer Section */}

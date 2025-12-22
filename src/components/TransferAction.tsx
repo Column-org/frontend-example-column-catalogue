@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import { useWallet } from 'column-catalogue'
+import { useAlert } from './alert/AlertProvider'
 
 export function TransferAction() {
     const { balance, signAndSend, checkBalance } = useWallet()
+    const { showAlert } = useAlert()
     const [recipient, setRecipient] = useState('')
     const [amount, setAmount] = useState('')
     const [loading, setLoading] = useState(false)
 
     const handleTransfer = async () => {
         if (!recipient || !amount) {
-            alert('Please enter recipient and amount')
+            showAlert('Please enter recipient and amount', 'info')
             return
         }
 
@@ -25,7 +27,7 @@ export function TransferAction() {
             })
 
             console.log("Transfer Success:", res.hash)
-            alert(`Transfer Successful! TX Hash: ${res.hash}`)
+            showAlert(`Transfer Successful! Transaction submitted.`, 'success', res.hash)
 
             // Clear inputs
             setRecipient('')
@@ -35,7 +37,7 @@ export function TransferAction() {
             setTimeout(checkBalance, 2000)
         } catch (err: any) {
             console.error("Transfer failed:", err)
-            alert("Transfer failed: " + err.message)
+            showAlert(err.message || "Transfer failed", 'error')
         } finally {
             setLoading(false)
         }

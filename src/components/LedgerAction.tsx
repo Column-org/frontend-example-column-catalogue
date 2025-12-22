@@ -1,7 +1,9 @@
 import { useWallet } from 'column-catalogue'
+import { useAlert } from './alert/AlertProvider'
 
 export function LedgerAction() {
     const { signAndSend, isConnected } = useWallet()
+    const { showAlert } = useAlert()
 
     const handleAction = async () => {
         try {
@@ -12,10 +14,10 @@ export function LedgerAction() {
                 typeArguments: []
             })
             console.log("On-Chain Success:", res.hash)
-            alert(`Success! TX Hash: ${res.hash}`)
-        } catch (err) {
+            showAlert(`Success! Transaction submitted.`, 'success', res.hash)
+        } catch (err: any) {
             console.error("Action failed:", err)
-            alert("Action failed. See console.")
+            showAlert(err.message || "Action failed", 'error')
         }
     }
 

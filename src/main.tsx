@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { CatalogueProvider } from 'column-catalogue'
 import { COLUMN_CONFIG } from './config/column'
+import { AlertProvider } from './components/alert/AlertProvider'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -11,7 +12,9 @@ createRoot(document.getElementById('root')!).render(
       network={COLUMN_CONFIG.network}
       rpcUrl={COLUMN_CONFIG.rpcUrl}
     >
-      <App />
+      <AlertProvider>
+        <App />
+      </AlertProvider>
     </CatalogueProvider>
   </StrictMode>,
 )

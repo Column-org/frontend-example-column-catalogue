@@ -1,4 +1,5 @@
 import { useWallet } from 'column-catalogue'
+import { useAlert } from './alert/AlertProvider'
 
 export function WalletConnect() {
     const {
@@ -6,6 +7,13 @@ export function WalletConnect() {
         disconnect,
         balance
     } = useWallet()
+    const { showAlert } = useAlert()
+
+    const copyAddress = () => {
+        if (!address) return
+        navigator.clipboard.writeText(address)
+        showAlert('Address copied to clipboard', 'info')
+    }
 
     return (
         <div style={{
@@ -18,11 +26,32 @@ export function WalletConnect() {
             border: '1px solid #efefef'
         }}>
             <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '0.7rem', color: '#aaa', fontWeight: '700', textTransform: 'uppercase' }}>
+                <div style={{ fontSize: '0.7rem', color: '#aaa', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>
                     Connected Address
                 </div>
-                <div className="address-box" style={{ border: 'none', background: 'none', padding: 0, marginTop: '2px', color: '#000' }}>
-                    {address?.slice(0, 6)}...{address?.slice(-4)}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div className="address-box" style={{ border: 'none', background: 'none', padding: 0, margin: 0, color: '#000', fontSize: '0.9rem' }}>
+                        {address?.slice(0, 6)}...{address?.slice(-6)}
+                    </div>
+                    <button
+                        onClick={copyAddress}
+                        style={{
+                            all: 'unset',
+                            cursor: 'pointer',
+                            color: '#bbb',
+                            display: 'flex',
+                            alignItems: 'center',
+                            transition: 'color 0.2s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#6366f1'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = '#bbb'}
+                        title="Copy Address"
+                    >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
 
