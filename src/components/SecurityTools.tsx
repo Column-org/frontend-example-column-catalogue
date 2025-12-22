@@ -9,8 +9,8 @@ export function SecurityTools() {
         if (confirm("WARNING: Only export your private key if you understand the risks. Never share it with anyone. Continue?")) {
             try {
                 const key = await exportKey()
-                console.log("Private Key Exported Successfully")
-                alert(`Your raw private key (hex): \n\n${key}\n\nKeep this secure!`)
+                await navigator.clipboard.writeText(key)
+                alert("Private Key Copied to Clipboard! (Keep it safe)")
             } catch (err) {
                 console.error("Export failed:", err)
             }

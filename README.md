@@ -5,8 +5,9 @@ A premium, industrial React implementation demonstrating the power of the **Colu
 ## 🚀 Key Features
 
 -   **Passkey Native**: Full biometric login (FaceID/TouchID) using WebAuthn.
--   **Multi-Origin Migration**: Integrated "Import via Private Key" to sync wallets across different local ports/domains.
--   **Transaction Engine**: Real-time MOVE transfers and smart contract interaction.
+-   **On-Chain Bio**: A full-stack example of interacting with a custom Move smart contract to register user profiles.
+-   **Transaction Engine**: Real-time MOVE transfers with industrial toast notifications.
+-   **Explorer Integration**: Direct links to the Movement Explorer for every transaction.
 -   **Zero-Seed Phrase**: Users never handle raw mnemonics; keys are encrypted and stored via IndexedDB and secured by the device hardware.
 
 ## 📂 File Arrangement & Architecture
@@ -15,30 +16,62 @@ The project follows a modular React component structure designed for scalability
 
 ```text
 /src
-├── components/          # Reusable UI Blocks
+├── components/          
+│   ├── alert/           # Industrial Toast Notification System
+│   │   └── AlertProvider.tsx 
+│   ├── bio/             # Full Smart Contract Module
+│   │   └── BioAction.tsx
 │   ├── Header.tsx       # Branding and global ConnectButton
 │   ├── ConnectButton.tsx# Context-aware connection trigger
 │   ├── Dashboard.tsx    # Main layout for connected state
 │   ├── TransferAction.tsx # MOVE transfer form logic
-│   ├── LedgerAction.tsx   # Generic on-chain call example
-│   └── SecurityTools.tsx # Private key export utilities
+│   └── LedgerAction.tsx   # Generic on-chain call example
 ├── config/              # Environment configurations
+├── services/            # ABI and Contract Definitions
 ├── main.tsx             # Entry point + SDK Provider setup
 ├── App.tsx              # View orchestration
 └── index.css            # Industrial Design System (Minimalist)
 ```
 
+## 🧩 **Components Reference**
+
+### **1. AlertProvider (`src/components/alert/AlertProvider.tsx`)**
+A Context-based notification system that replaces native alerts with industrial-style toasts.
+*   **Features**: Auto-dismiss, success/error states, Explorer Hash Links.
+*   **Usage**: Wraps the entire app in `main.tsx`.
+
+```tsx
+const { showAlert } = useAlert();
+showAlert('Transaction Submitted!', 'success', '0x123...hash');
+```
+
+### **2. BioAction (`src/components/bio/BioAction.tsx`)**
+A complete module for interacting with the `onchain_bio` smart contract.
+*   **Reads State**: Fetches the user's current bio from the blockchain.
+*   **Writes State**: Signs a transaction to register/update the bio.
+*   **Logic**: Demonstrates complex smart contract interaction using `signAndSend`.
+
+### **3. TransferAction (`src/components/TransferAction.tsx`)**
+A polished UI for sending native MOVE tokens.
+*   **Features**: Input validation, Octa conversion, real-time balance updates.
+
+### **4. WalletConnect (`src/components/WalletConnect.tsx`)**
+Displays wallet identity with usability enhancements.
+*   **Features**: Truncated address, **Click-to-Copy** functionality, Logout button.
+
 ## 🛠️ SDK Integration Guide
 
 ### 1. Wrap your App
-Initialize the `CatalogueProvider` at the root of your application. This sets up the global wallet context.
+Initialize the `CatalogueProvider` at the root of your application.
 
 ```tsx
 import { CatalogueProvider } from 'column-catalogue';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <CatalogueProvider network="testnet">
-    <App />
+    <AlertProvider>
+      <App />
+    </AlertProvider>
   </CatalogueProvider>
 );
 ```
@@ -50,20 +83,7 @@ Use the `useWallet` hook in any component to access the user's state and methods
 import { useWallet } from 'column-catalogue';
 
 const { address, balance, signAndSend, isConnected } = useWallet();
-```
-
-### 3. Perform a Transfer
-Transactions are signed using the user's passkey automatically when calling `signAndSend`.
-
-```tsx
-const handleSend = async () => {
-    const result = await signAndSend({
-        function: '0x1::aptos_account::transfer',
-        functionArguments: [recipientAddress, amountInOctas],
-        typeArguments: []
-    });
-    console.log("TX Hash:", result.hash);
-};
+const { showAlert } = useAlert();
 ```
 
 ## 🏗️ Getting Started
@@ -99,10 +119,10 @@ The SDK derives a unique encryption key using **PBKDF2 (Password-Based Key Deriv
 - **AES-256 Key**: Resulting in a high-entropy symmetric key.
 
 ### 3. AES-256-GCM Encryption
-Private keys are encrypted using **AES-256-GCM**. This "authenticated" encryption mode ensures that any tampering with the stored data will cause decryption to fail. Every save uses a fresh random **IV (Initialization Vector)**.
+Private keys are encrypted using **AES-256-GCM**. Every save uses a fresh random **IV**.
 
 ### 4. Same-Origin Storage
-The encrypted payload is stored in **IndexedDB**, protected by the browser's **Same-Origin Policy**. This ensures that only your authorized domain/port can interact with the wallet data.
+The encrypted payload is stored in **IndexedDB**, protected by the browser's **Same-Origin Policy**.
 
 ---
 Built by **Joseph Sunday (Nile_Dex)**
