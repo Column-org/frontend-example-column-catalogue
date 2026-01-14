@@ -20,20 +20,25 @@ npm install @react-native-async-storage/async-storage react-native-passkey react
 
 ## **Step 2: Global Configuration (`src/config/column.ts`)**
 
-Before using the SDK, you must ensure that the required crypto polyfills are loaded and configured at the root of your application.
+Before using the SDK, you must ensure that the required crypto polyfills are loaded and configured. It's also best practice to create a centralized config for your RPC URL and a global client instance for non-React calls.
 
 ```tsx
 // src/config/column.ts
 import 'react-native-get-random-values';
 import { Buffer } from 'buffer';
+import { getAptosClient } from 'column-catalogue/native';
 
 // @ts-ignore
 global.Buffer = Buffer;
 
-// Optional: Export any shared configuration
+// 1. Centralized Configuration
 export const COLUMN_CONFIG = {
-  network: 'testnet',
+  network: 'testnet' as const,
+  rpcUrl: 'https://testnet.movementnetwork.xyz/v1',
 };
+
+// 2. Global client instance for core SDK calls (non-React)
+export const aptosClient = getAptosClient(COLUMN_CONFIG.network, COLUMN_CONFIG.rpcUrl);
 ```
 
 > [!NOTE]
