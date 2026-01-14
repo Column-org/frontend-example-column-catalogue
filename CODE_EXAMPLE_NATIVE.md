@@ -18,12 +18,36 @@ npm install @react-native-async-storage/async-storage react-native-passkey react
 
 ---
 
-## **Step 2: Initialize Providers**
+## **Step 2: Global Configuration (`src/config/column.ts`)**
+
+Before using the SDK, you must ensure that the required crypto polyfills are loaded and configured at the root of your application.
+
+```tsx
+// src/config/column.ts
+import 'react-native-get-random-values';
+import { Buffer } from 'buffer';
+
+// @ts-ignore
+global.Buffer = Buffer;
+
+// Optional: Export any shared configuration
+export const COLUMN_CONFIG = {
+  network: 'testnet',
+};
+```
+
+> [!NOTE]
+> Make sure to import this file at the very top of your `index.js` or `App.tsx`.
+
+---
+
+## **Step 3: Initialize Providers**
 
 In React Native, you use the `/native` entry point. This automatically configures the SDK to use mobile-specific storage and passkey implementations.
 
 ```tsx
 // App.tsx
+import './src/config/column'; // Import your config first!
 import React from 'react';
 import { CatalogueProvider } from 'column-catalogue/native';
 
@@ -38,7 +62,7 @@ export default function App() {
 
 ---
 
-## **Step 3: Accessing the Wallet (`useWallet` Hook)**
+## **Step 4: Accessing the Wallet (`useWallet` Hook)**
 
 The hook works exactly like the Web version but uses native UI components for the modal.
 
@@ -81,12 +105,14 @@ const styles = StyleSheet.create({
 
 ---
 
-## **Step 4: Signing Transactions**
+## **Step 5: Signing Transactions**
 
 Signing uses the device's native biometric prompt (FaceID, TouchID, or Android Biometrics).
 
 ```tsx
 const handleSend = async () => {
+    const { signAndSend } = useWallet();
+    
     try {
         const result = await signAndSend({
             function: '0x1::aptos_account::transfer',
