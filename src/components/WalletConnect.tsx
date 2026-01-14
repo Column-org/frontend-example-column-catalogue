@@ -5,7 +5,8 @@ export function WalletConnect() {
     const {
         address,
         disconnect,
-        balance
+        balance,
+        username
     } = useWallet()
     const { showAlert } = useAlert()
 
@@ -27,7 +28,7 @@ export function WalletConnect() {
         }}>
             <div style={{ textAlign: 'left' }}>
                 <div style={{ fontSize: '0.7rem', color: '#aaa', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>
-                    Connected Address
+                    {username ? `Account: ${username}` : 'Connected Address'}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <div className="address-box" style={{ border: 'none', background: 'none', padding: 0, margin: 0, color: '#000', fontSize: '0.9rem' }}>

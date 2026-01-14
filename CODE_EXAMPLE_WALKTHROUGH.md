@@ -40,7 +40,6 @@ import { getAptosClient } from 'column-catalogue';
 export const COLUMN_CONFIG = {
     network: 'testnet' as const,
     rpcUrl: 'https://testnet.movementnetwork.xyz/v1',
-    username: 'Developer'
 };
 
 // Global client instance for core SDK calls
@@ -84,6 +83,7 @@ import { useWallet } from 'column-catalogue';
 const { 
   isConnected,   // Boolean: true if user is logged in
   address,       // String: The 0x... address of the user
+  username,      // String: The user's account name (e.g., "Alice")
   balance,       // Object: { formatted: "10.5", raw: 1050000000 }
   openModal,     // Function: Opens the login modal (Passkey/Import)
   disconnect,    // Function: Logs the user out
@@ -179,9 +179,10 @@ export function SimpleWallet() {
 
 Below is a complete reference of every tool provided by the `useWallet` hook, separated from the integration steps above.
 
-### **1. `connect()` vs `openModal()`**
-*   **`openModal()` IS RECOMMENDED**: It opens the official UI which lets users choose between "Create New", "Login", or "Import".
-*   **`connect()`**: A lower-level trigger for the default flow. Use `openModal` for the best UX.
+### **1. `connect(username?)` vs `openModal()`**
+*   **`openModal()` IS RECOMMENDED**: It opens the official UI which lets users choose between "Create New", "Login", or "Import". It includes a field for the **Account Name**.
+*   **`connect(username?)`**: A lower-level trigger for the default flow. You can optionally pass a username.
+*   **Cross-Device Support**: Passkeys created on PC can now be used on mobile and vice-versa. The modal will handle the device selection automatically.
 *   **Usage:** Attach this to your "Connect Wallet" button.
 
 ### **2. `signAndSend(payload)`**
